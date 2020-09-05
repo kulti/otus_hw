@@ -5,11 +5,6 @@ env:
   GOPROXY: "https://proxy.golang.org"
   BRANCH: ${{github.head_ref}}
 
-on:
-  pull_request:
-    branches:
-      - hw*
-
 jobs:
   go_get:
     runs-on: ubuntu-latest
