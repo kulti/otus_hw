@@ -1,0 +1,25 @@
+name: Otus HomeWork
+
+env:
+  GO111MODULE: "on"
+  GOPROXY: "https://proxy.golang.org"
+  BRANCH: ${{github.head_ref}}
+
+on:
+  pull_request:
+    branches:
+      - hw*
+
+jobs:
+  go_get:
+    runs-on: ubuntu-latest
+    if: github.ref != 'refs/heads/hw12_13_14_15_calendar'
+    steps:
+    - name: Set up Go
+      uses: actions/setup-go@v2
+      with:
+        go-version: ^1.14
+
+    - name: go get
+      run: cd /tmp && go get "github.com/${GITHUB_REPOSITORY}/${BRANCH}@${BRANCH}"
+
