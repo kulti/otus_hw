@@ -1,7 +1,7 @@
-build:
+build: lint
 	go build -o ./bin/calendar ./cmd/calendar
 
-test:
+test: lint
 	go test -race ./internal/... ./pkg/...
 
 install-lint-deps:
