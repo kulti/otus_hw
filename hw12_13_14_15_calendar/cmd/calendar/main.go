@@ -5,10 +5,10 @@ import (
 	"os"
 	"os/signal"
 
-	"github.com/fixme_my_friend/hw12_13_14_15_calendar/internal/app"
-	"github.com/fixme_my_friend/hw12_13_14_15_calendar/internal/logger"
-	internalhttp "github.com/fixme_my_friend/hw12_13_14_15_calendar/internal/server/http"
-	memorystorage "github.com/fixme_my_friend/hw12_13_14_15_calendar/internal/storage/memory"
+	"github.com/kulti/otus_hw/hw12_13_14_15_calendar/internal/app"
+	"github.com/kulti/otus_hw/hw12_13_14_15_calendar/internal/logger"
+	internalhttp "github.com/kulti/otus_hw/hw12_13_14_15_calendar/internal/server/http"
+	memorystorage "github.com/kulti/otus_hw/hw12_13_14_15_calendar/internal/storage/memory"
 )
 
 var configFile string
@@ -18,8 +18,8 @@ func init() {
 }
 
 func main() {
-	config := NewConfig()
-	logg := logger.New(config.Logger.Level)
+	// config := NewConfig()
+	logg := logger.New("")
 
 	storage := memorystorage.New()
 	calendar := app.New(logg, storage)
@@ -34,12 +34,12 @@ func main() {
 		signal.Stop(signals)
 
 		if err := server.Stop(); err != nil {
-			logger.Error("failed to stop http server: " + err.String())
+			// logger.Error("failed to stop http server: " + err.String())
 		}
 	}()
 
 	if err := server.Start(); err != nil {
-		logger.Error("failed to start http server: " + err.String())
+		// logger.Error("failed to start http server: " + err.String())
 		os.Exit(1)
 	}
 }

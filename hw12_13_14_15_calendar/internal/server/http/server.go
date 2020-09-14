@@ -1,7 +1,5 @@
 package internalhttp
 
-import "context"
-
 type Server struct {
 	// TODO
 }
@@ -15,12 +13,12 @@ func NewServer(app Application) *Server {
 }
 
 func (s *Server) Start() error {
-	// TODO
+	return nil
 }
 
 func (s *Server) Stop() error {
-	ctx, cancel := context.WithTimeout(context.Background(), shutdownTimeout)
-	// TODO
+	// ctx, cancel := context.WithTimeout(context.Background(), shutdownTimeout)
+	return nil
 }
 
 // TODO
