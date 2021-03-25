@@ -1,9 +1,12 @@
 package main
 
 import (
+	"context"
 	"flag"
 	"os"
 	"os/signal"
+	"syscall"
+	"time"
 
 	"github.com/fixme_my_friend/hw12_13_14_15_calendar/internal/app"
 	"github.com/fixme_my_friend/hw12_13_14_15_calendar/internal/logger"
@@ -18,6 +21,13 @@ func init() {
 }
 
 func main() {
+	flag.Parse()
+
+	if flag.Arg(0) == "version" {
+		printVersion()
+		return
+	}
+
 	config := NewConfig()
 	logg := logger.New(config.Logger.Level)
 
@@ -26,20 +36,26 @@ func main() {
 
 	server := internalhttp.NewServer(calendar)
 
+	ctx, cancel := signal.NotifyContext(context.Background(),
+		syscall.SIGINT, syscall.SIGTERM, syscall.SIGHUP)
+	defer cancel()
+
 	go func() {
-		signals := make(chan os.Signal, 1)
-		signal.Notify(signals)
+		<-ctx.Done()
 
-		<-signals
-		signal.Stop(signals)
+		ctx, cancel := context.WithTimeout(context.Background(), time.Second*3)
+		defer cancel()
 
-		if err := server.Stop(); err != nil {
-			logger.Error("failed to stop http server: " + err.String())
+		if err := server.Stop(ctx); err != nil {
+			logg.Error("failed to stop http server: " + err.Error())
 		}
 	}()
 
-	if err := server.Start(); err != nil {
-		logger.Error("failed to start http server: " + err.String())
-		os.Exit(1)
+	logg.Info("calendar is running...")
+
+	if err := server.Start(ctx); err != nil {
+		logg.Error("failed to start http server: " + err.Error())
+		cancel()
+		os.Exit(1) //nolint:gocritic
 	}
 }
